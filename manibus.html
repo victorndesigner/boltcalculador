@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Farm do Manibus</title>
+  <style>
+    body {
+      background-color: #181818;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #8A2BE2;
+    }
+    label, select, input, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+    select, input {
+      background-color: #222;
+      color: #fff;
+    }
+    button {
+      background-color: #8A2BE2;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #512188;
+    }
+    .resultado {
+      margin-top: 20px;
+      background-color: #222;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    .titulo-resultado {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .linha-resultado {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    .quantidade {
+      color: #c184ff;
+      font-weight: bold;
+    }
+    .item {
+      color: #ffffff;
+      font-weight: normal;
+    }
+    .creditos {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .bolt-text {
+      color: #e9e9e9;
+      text-decoration: none;
+    }
+    .by {
+      color: #8A2BE2;
+    }
+  </style>
+</head>
+<body>
+
+  <h1><span style="color: #ffffff;">Farm do</span> <span style="color: #8A2BE2;">Manibus</span></h1>
+
+  <label for="pessoas">Quantas pessoas vão farmar?</label>
+  <select id="pessoas">
+    <option value="1">1 pessoa</option>
+    <option value="2">2 pessoas</option>
+    <option value="3">3 pessoas</option>
+    <option value="4">4 pessoas</option>
+  </select>
+
+  <label for="reliquias">Quantas Relíquias de Realidade você tem?</label>
+  <input type="number" id="reliquias" min="1" placeholder="Ex: 240" />
+
+  <button onclick="calcular()">Calcular</button>
+
+  <div class="resultado" id="resultado"></div>
+
+  <div class="creditos">
+    <p><span class="by">By</span> <a href="https://www.youtube.com/@bolttexturas" class="bolt-text" target="_blank">Bolttexturas</a></p>
+  </div>
+
+  <script>
+    function calcular() {
+      const pessoas = parseInt(document.getElementById('pessoas').value);
+      const reliquias = parseInt(document.getElementById('reliquias').value);
+      const resultadoDiv = document.getElementById('resultado');
+      
+      if (!pessoas || !reliquias || reliquias <= 0) {
+        resultadoDiv.innerHTML = "<div class='linha-resultado'>Preencha todos os campos corretamente.</div>";
+        return;
+      }
+
+      const totalCaixas = Math.floor(reliquias / 60);
+      const caixasPorPessoa = Math.floor(totalCaixas / pessoas);
+
+      // Tempo estimado: 65 segundos por caixa
+      const totalSegundos = totalCaixas * 65;
+      const horas = Math.floor(totalSegundos / 3600);
+      const minutos = Math.floor((totalSegundos % 3600) / 60);
+
+      resultadoDiv.innerHTML = `
+        <div class='titulo-resultado'>Resultado da Farm:</div>
+        <div class='linha-resultado'><span class='item'>Caixas por Pessoa:</span> <span class='quantidade'>${caixasPorPessoa}</span></div>
+        <div class='linha-resultado'><span class='item'>Total de Caixas:</span> <span class='quantidade'>${totalCaixas}</span></div>
+        <div class='linha-resultado'><span class='item'>Tempo estimado de farm:</span> <span class='quantidade'>${horas}h ${minutos}min</span></div>
+      `;
+    }
+  </script>
+
+</body>
+</html>

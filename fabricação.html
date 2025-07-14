@@ -140,13 +140,11 @@
   <button class="back-btn" onclick="window.location.href='/'">Voltar</button>
   <h1><span style="color: #ffffff;">Calculadora de</span> <span style="color: #8A2BE2;">Fabricação</span></h1>
 
-  <input type="text" id="pesquisa" class="input-pesquisa" oninput="filtrarOpcoes()" placeholder="Digite para pesquisar...">
-  <div id="sugestoes" class="sugestoes"></div>
-
   <label for="categoria">Tipo de Fabricação:</label>
   <select id="categoria" onchange="mostrarCampos()">
-    
-    <option value="/">Selecione aqui...</option>
+    <option value="">-- Escolha --</option>
+    <option value="poeira">Poeira Estelar</option>
+    <option value="lingote">Lingote de Poeira</option>
     <option value="barra_prata">Barra de Prata</option>
     <option value="barra_ouro">Barra de Ouro</option>
     <option value="berilio">Cristal de Berílio</option>
@@ -154,14 +152,23 @@
     <option value="iridio">Cristal de Irídio</option>
     <option value="platina">Cristal de Platina</option>
     <option value="acido">Ácido</option>
-    <option value="poeira">Poeira Estelar</option>
-    <option value="lingote">Lingote de Poeira</option>
   </select>
 
   <div id="campoQuantidade" style="display: none;">
     <label for="quantidade">Quantidade desejada:</label>
     <input type="number" id="quantidade" min="1" placeholder="Ex: 30">
     <button onclick="calcular()">Calcular</button>
+  </div>
+
+  <div id="campoPoeira" style="display: none;">
+    <label for="tipoRecurso">Escolha o recurso que você TEM:</label>
+    <select id="tipoRecurso">
+      <option value="gasolina">Gasolina Comum</option>
+      <option value="minerio">Minério Estelar</option>
+    </select>
+    <label for="quantidadeRecurso">Quantidade do recurso:</label>
+    <input type="number" id="quantidadeRecurso" min="1">
+    <button onclick="calcularPoeira()">Calcular</button>
   </div>
 
   <div class="resultado" id="resultado"></div>
@@ -172,7 +179,6 @@
     <p><span class="by">By</span> <a href="https://www.youtube.com/@bolttexturas" class="bolt-text" target="_blank">Bolttexturas</a></p>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     const receitas = {
       barra_prata: [{ item: "Prata", quantidade: 30 }],
@@ -194,10 +200,6 @@
         { item: "Barra de Tungstênio", quantidade: 5 }
       ],
       acido: [{ item: "Poeira Estelar", quantidade: 4 }],
-      poeira: [
-        { item: "Gasolina Comum", quantidade: 15 },
-        { item: "Minério Estelar", quantidade: 25 }
-      ],
       lingote: [
         { item: "Minério Estelar", quantidade: 60 },
         { item: "Poeira Estelar", quantidade: 15 }
@@ -205,9 +207,10 @@
     };
 
     function mostrarCampos() {
-      document.getElementById('campoQuantidade').style.display = 'block';
+      const categoria = document.getElementById('categoria').value;
       document.getElementById('resultado').innerHTML = '';
-      document.getElementById('quantidade').value = '';
+      document.getElementById('campoQuantidade').style.display = categoria === 'poeira' ? 'none' : 'block';
+      document.getElementById('campoPoeira').style.display = categoria === 'poeira' ? 'block' : 'none';
     }
 
     function calcular() {
@@ -227,53 +230,21 @@
       document.getElementById('resultado').innerHTML = resultadoTexto;
     }
 
-    function filtrarOpcoes() {
-      const pesquisa = document.getElementById('pesquisa').value.toLowerCase();
-      const sugestoesContainer = document.getElementById('sugestoes');
-      const opcoes = [
-        { value: "barra_prata", text: "Barra de Prata" },
-        { value: "barra_ouro", text: "Barra de Ouro" },
-        { value: "berilio", text: "Cristal de Berílio" },
-        { value: "vanadio", text: "Cristal de Vanádio" },
-        { value: "iridio", text: "Cristal de Irídio" },
-        { value: "platina", text: "Cristal de Platina" },
-        { value: "acido", text: "Ácido" },
-        { value: "poeira", text: "Poeira Estelar" },
-        { value: "lingote", text: "Lingote de Poeira" }
-      ];
+    function calcularPoeira() {
+      const tipo = document.getElementById('tipoRecurso').value;
+      const qtd = parseInt(document.getElementById('quantidadeRecurso').value);
+      if (!qtd || qtd <= 0) return;
 
-      const opcoesFiltradas = opcoes.filter(opcao => opcao.text.toLowerCase().includes(pesquisa));
-      sugestoesContainer.innerHTML = '';
+      let quantidadeFinal = Math.floor(qtd / (tipo === 'gasolina' ? 15 : 25)) * 50;
+      let qtdFalta = tipo === 'gasolina' ? quantidadeFinal / 50 * 25 : quantidadeFinal / 50 * 15;
 
-      if (opcoesFiltradas.length > 0) {
-        sugestoesContainer.style.display = 'block';
-        opcoesFiltradas.forEach(opcao => {
-          const div = document.createElement('div');
-          div.className = 'sugestao';
-          div.textContent = opcao.text;
-          div.onclick = () => selecionarOpcao(opcao.value);
-          sugestoesContainer.appendChild(div);
-        });
-      } else {
-        sugestoesContainer.style.display = 'none';
-      }
+      const outroRecurso = tipo === 'gasolina' ? 'Minério Estelar' : 'Gasolina Comum';
+      document.getElementById('resultado').innerHTML = `
+        <div class='titulo-resultado'>Resultado para Poeira Estelar:</div>
+        <div class='linha-resultado'><span class='item'>Quantidade:</span> <span class='quantidade'>${quantidadeFinal}</span></div>
+        <div class='linha-resultado'><span class='item'>Falta de ${outroRecurso}:</span> <span class='quantidade'>${qtdFalta}</span></div>
+      `;
     }
-
-    function selecionarOpcao(valor) {
-      document.getElementById('categoria').value = valor;
-      mostrarCampos();
-      document.getElementById('sugestoes').style.display = 'none';
-      document.getElementById('pesquisa').value = '';
-    }
-
-    // Ocultar sugestões ao clicar fora
-    document.addEventListener('click', function(event) {
-      const sugestoesContainer = document.getElementById('sugestoes');
-      const pesquisaInput = document.getElementById('pesquisa');
-      if (!pesquisaInput.contains(event.target) && !sugestoesContainer.contains(event.target)) {
-        sugestoesContainer.style.display = 'none';
-      }
-    });
 
     document.getElementById("btnSalvar").addEventListener("click", function () {
       html2canvas(document.body).then(canvas => {
@@ -285,5 +256,6 @@
     });
   </script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
