@@ -117,7 +117,7 @@
       const pessoas = parseInt(document.getElementById('pessoas').value);
       const reliquias = parseInt(document.getElementById('reliquias').value);
       const resultadoDiv = document.getElementById('resultado');
-      
+
       if (!pessoas || !reliquias || reliquias <= 0) {
         resultadoDiv.innerHTML = "<div class='linha-resultado'>Preencha todos os campos corretamente.</div>";
         return;
@@ -125,18 +125,26 @@
 
       const totalCaixas = Math.floor(reliquias / 60);
       const caixasPorPessoa = Math.floor(totalCaixas / pessoas);
-
-      // Tempo estimado: 65 segundos por caixa
       const totalSegundos = totalCaixas * 65;
       const horas = Math.floor(totalSegundos / 3600);
       const minutos = Math.floor((totalSegundos % 3600) / 60);
 
-      resultadoDiv.innerHTML = `
+      let resultadoHTML = `
         <div class='titulo-resultado'>Resultado da Farm:</div>
-        <div class='linha-resultado'><span class='item'>Caixas por Pessoa:</span> <span class='quantidade'>${caixasPorPessoa}</span></div>
+      `;
+
+      if (pessoas > 1) {
+        resultadoHTML += `
+          <div class='linha-resultado'><span class='item'>Caixas por Pessoa:</span> <span class='quantidade'>${caixasPorPessoa}</span></div>
+        `;
+      }
+
+      resultadoHTML += `
         <div class='linha-resultado'><span class='item'>Total de Caixas:</span> <span class='quantidade'>${totalCaixas}</span></div>
         <div class='linha-resultado'><span class='item'>Tempo estimado de farm:</span> <span class='quantidade'>${horas}h ${minutos}min</span></div>
       `;
+
+      resultadoDiv.innerHTML = resultadoHTML;
     }
   </script>
 
