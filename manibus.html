@@ -93,7 +93,7 @@
   <button class="back-btn" onclick="window.location.href='/'">Voltar</button>
   <h1><span style="color: #ffffff;">Farm do</span> <span style="color: #8A2BE2;">Manibus</span></h1>
 
-  <label for="pessoas">Quantas pessoas vão farmar?</label>
+  <label for="pessoas">Quantos vão farmar?</label>
   <select id="pessoas">
     <option value="1">1 pessoa</option>
     <option value="2">2 pessoas</option>
@@ -101,8 +101,12 @@
     <option value="4">4 pessoas</option>
   </select>
 
-  <label for="reliquias">Quantas Relíquias de Realidade você tem?</label>
+  <label for="reliquias">Quantas Relíquias você tem?</label>
   <input type="number" id="reliquias" min="1" placeholder="Ex: 240" />
+  
+  <label for="tempo">Quantos segundos uma rodada?</label>
+  <input type="number" id="tempo" min="1" placeholder="Padrão: 70 segundos" />
+  
 
   <button onclick="calcular()">Calcular</button>
 
@@ -125,7 +129,9 @@
 
       const totalCaixas = Math.floor(reliquias / 60);
       const caixasPorPessoa = Math.floor(totalCaixas / pessoas);
-      const totalSegundos = totalCaixas * 65;
+      const tempoInput = parseInt(document.getElementById('tempo').value);
+      const tempoManibus = isNaN(tempoInput) || tempoInput <= 0 ? 70 : tempoInput;
+      const totalSegundos = totalCaixas * tempoManibus;
       const horas = Math.floor(totalSegundos / 3600);
       const minutos = Math.floor((totalSegundos % 3600) / 60);
 
